@@ -4,25 +4,27 @@ import gulp from 'gulp';
 
 import {deleteSync as del} from 'del';
 import pug from 'gulp-pug';
+import server from 'gulp-webserver'; // https://www.npmjs.com/package/gulp-webserver
 
 // ----- Routes -----
 
 const routes = {
+	build: 'build',
 	pug: {
 		src: 'src/*.pug',
 		dest: 'build'
 	}
 }
 
-// ----- Tasks -----
+// ----- Prepare -----
 
 const clear = async () => {
-	del(['build']);
+	del([routes.build]);
 };
 
 const prepare = gulp.series([clear]);
 
-// ---
+// ----- Compile -----
 
 const pug_compile = async () => {
 	return gulp.src(routes.pug.src)
@@ -32,9 +34,27 @@ const pug_compile = async () => {
 
 const assets = gulp.series([pug_compile]);
 
-// ---
+// ----- Server -----
 
-export const dev = gulp.series([
+const server_settings = {
+	livereload: true,
+	https: true,
+	open: true
+}
+
+const server_run = async () => {
+	gulp.src(routes.build)
+	.pipe(server(server_settings));
+}
+
+const start = gulp.series([server_run]);
+
+// ----- Run -----
+
+// FIXME: build folder is not created while trying to start the server
+
+export const dev = gulp.series(
 	prepare,
-	assets
-]);
+	assets,
+	start
+);
