@@ -2,7 +2,7 @@ import gulp from 'gulp';
 
 // ----- Plugins -----
 
-import pug from 'gulp-pug'; // https://www.npmjs.com/package/gulp-pug
+import gpug from 'gulp-pug';
 
 // ----- Routes -----
 
@@ -15,16 +15,10 @@ const routes = {
 
 // ----- Tasks -----
 
-export const cpug = () => {
-
-	gulp.src(routes.pug.src) // https://gulpjs.com/docs/en/api/src
-	.pipe(pug())
-	.pipe(gulp.dest(routes.pug.dest)) // https://gulpjs.com/docs/en/api/dest
-
+export const pug_process = async () => {
+	gulp.src(routes.pug.src)
+	.pipe(gpug())
+	.pipe(gulp.dest(routes.pug.dest));
 }
 
-export const dev = async () => {
-	console.log('Dev command executed');
-
-	gulp.series([cpug]); // https://gulpjs.com/docs/en/api/series
-}
+export const dev = gulp.series([pug_process]);
