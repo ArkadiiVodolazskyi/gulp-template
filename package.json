@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "gulp",
   "version": "1.0.0",
   "description": "",
@@ -13,6 +14,7 @@
     "@babel/core": "^7.18.9",
     "@babel/preset-env": "^7.18.9",
     "@babel/register": "^7.18.9",
+    "del": "^7.0.0",
     "gulp": "^4.0.2",
     "gulp-pug": "^5.0.0"
   }

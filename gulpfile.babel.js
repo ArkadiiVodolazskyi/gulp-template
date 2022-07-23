@@ -2,7 +2,8 @@ import gulp from 'gulp';
 
 // ----- Plugins -----
 
-import gpug from 'gulp-pug';
+import {deleteSync as del} from 'del';
+import pug from 'gulp-pug';
 
 // ----- Routes -----
 
@@ -15,10 +16,25 @@ const routes = {
 
 // ----- Tasks -----
 
-export const pug_process = async () => {
-	gulp.src(routes.pug.src)
-	.pipe(gpug())
+const clear = async () => {
+	del(['build']);
+};
+
+const prepare = gulp.series([clear]);
+
+// ---
+
+const pug_compile = async () => {
+	return gulp.src(routes.pug.src)
+	.pipe(pug())
 	.pipe(gulp.dest(routes.pug.dest));
 }
 
-export const dev = gulp.series([pug_process]);
+const assets = gulp.series([pug_compile]);
+
+// ---
+
+export const dev = gulp.series([
+	prepare,
+	assets
+]);
