@@ -18,15 +18,16 @@ const routes = {
 
 // ----- Prepare -----
 
-const clear = async () => {
+const clear = (resolve) => {
 	del([routes.build]);
+	resolve();
 };
 
 const prepare = gulp.series([clear]);
 
 // ----- Compile -----
 
-const pug_compile = async () => {
+const pug_compile = () => {
 	return gulp.src(routes.pug.src)
 	.pipe(pug())
 	.pipe(gulp.dest(routes.pug.dest));
@@ -38,11 +39,10 @@ const assets = gulp.series([pug_compile]);
 
 const server_settings = {
 	livereload: true,
-	https: true,
 	open: true
 }
 
-const server_run = async () => {
+const server_run = () => {
 	gulp.src(routes.build)
 	.pipe(server(server_settings));
 }
@@ -53,8 +53,8 @@ const start = gulp.series([server_run]);
 
 // FIXME: build folder is not created while trying to start the server
 
-export const dev = gulp.series(
+export const dev = gulp.series([
 	prepare,
 	assets,
 	start
-);
+]);
