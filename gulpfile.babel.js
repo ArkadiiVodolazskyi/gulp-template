@@ -11,6 +11,7 @@ import server from 'gulp-webserver'; // https://www.npmjs.com/package/gulp-webse
 const routes = {
 	build: 'build',
 	pug: {
+		watch: 'src/**/*.pug',
 		src: 'src/*.pug',
 		dest: 'build'
 	}
@@ -35,6 +36,19 @@ const pug_compile = () => {
 
 const assets = gulp.series([pug_compile]);
 
+// ----- Watch -----
+
+// https://gulpjs.com/docs/en/api/watch
+const watch = async () => {
+	return gulp.watch([
+		routes.pug.watch
+	], {
+		delay: 0,
+		interval: 0,
+		binaryInterval: 0
+	}, pug_compile);
+}
+
 // ----- Server -----
 
 const server_settings = {
@@ -47,11 +61,12 @@ const server_run = () => {
 	.pipe(server(server_settings));
 }
 
-const start = gulp.series([server_run]);
+const start = gulp.parallel([
+	server_run,
+	watch
+]);
 
 // ----- Run -----
-
-// FIXME: build folder is not created while trying to start the server
 
 export const dev = gulp.series([
 	prepare,
