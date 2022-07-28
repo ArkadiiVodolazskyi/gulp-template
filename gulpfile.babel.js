@@ -4,7 +4,8 @@ import gulp from 'gulp';
 
 import {deleteSync as del} from 'del';
 import pug from 'gulp-pug';
-import server from 'gulp-webserver'; // https://www.npmjs.com/package/gulp-webserver
+import server from 'gulp-webserver';
+import image from 'gulp-image'; // https://www.npmjs.com/package/gulp-image
 
 // ----- Routes -----
 
@@ -14,17 +15,27 @@ const routes = {
 		watch: 'src/**/*.pug',
 		src: 'src/*.pug',
 		dest: 'build'
+	},
+	img: {
+		src: 'src/img/*',
+		dest: 'build/img'
 	}
 }
 
 // ----- Prepare -----
 
-const clear = (resolve) => {
+const clear = resolve => {
 	del([routes.build]);
 	resolve();
 };
 
-const prepare = gulp.series([clear]);
+const img = async () => {
+	gulp.src(routes.img.src)
+	.pipe(image())
+	.pipe(gulp.dest(routes.img.dest));
+}
+
+const prepare = gulp.series([clear, img]);
 
 // ----- Compile -----
 
