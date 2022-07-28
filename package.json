@@ -21,7 +21,9 @@
     "gulp-webserver": "^0.9.1"
   },
   "devDependencies": {
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-sass": "^5.1.0",
     "sass": "^1.54.0"
-  }
+  },
+  "browserslist": ["last 10 versions"]
 }

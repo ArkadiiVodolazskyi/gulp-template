@@ -7,8 +7,12 @@ import pug from 'gulp-pug';
 import server from 'gulp-webserver';
 import image from 'gulp-image';
 import dartSass from 'sass';
-import gulpSass from 'gulp-sass'; // https://www.npmjs.com/package/gulp-sass
+import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
+
+import autoPrefixer from 'gulp-autoprefixer'; // https://github.com/postcss/autoprefixer#options | https://github.com/browserslist/browserslist#queries
+
+// TODO: use PostCSS instead of gulp-autoprefixer: https://github.com/postcss/autoprefixer#gulp
 
 // ----- Routes -----
 
@@ -56,6 +60,8 @@ const pug_compile = () => {
 const sass_compile = () => {
 	return gulp.src(routes.sass.src)
 	.pipe(sass())
+	.on('error', sass.logError)
+	.pipe(autoPrefixer())
 	.pipe(gulp.dest(routes.sass.dest));
 }
 
@@ -69,18 +75,10 @@ const watch_options = {
 	binaryInterval: 0
 }
 
-const watch_pug = async () => {
-	return gulp.watch([routes.pug.watch], watch_options, pug_compile);
+const watch = async () => {
+	gulp.watch([routes.pug.watch], watch_options, pug_compile);
+	gulp.watch([routes.sass.watch], watch_options, sass_compile);
 }
-
-const watch_sass = async () => {
-	return gulp.watch([routes.sass.watch], watch_options, sass_compile);
-}
-
-const watch = gulp.parallel([
-	watch_pug,
-	watch_sass
-]);
 
 // ----- Server -----
 
