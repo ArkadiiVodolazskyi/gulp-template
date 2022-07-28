@@ -19,5 +19,9 @@
     "gulp-image": "^6.3.1",
     "gulp-pug": "^5.0.0",
     "gulp-webserver": "^0.9.1"
+  },
+  "devDependencies": {
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.54.0"
   }
 }

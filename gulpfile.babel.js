@@ -5,7 +5,10 @@ import gulp from 'gulp';
 import {deleteSync as del} from 'del';
 import pug from 'gulp-pug';
 import server from 'gulp-webserver';
-import image from 'gulp-image'; // https://www.npmjs.com/package/gulp-image
+import image from 'gulp-image';
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass'; // https://www.npmjs.com/package/gulp-sass
+const sass = gulpSass(dartSass);
 
 // ----- Routes -----
 
@@ -19,6 +22,11 @@ const routes = {
 	img: {
 		src: 'src/img/*',
 		dest: 'build/img'
+	},
+	sass: {
+		watch: 'src/sass/*.sass',
+		src: 'src/sass/**/*.sass',
+		dest: 'build/css'
 	}
 }
 
@@ -45,20 +53,34 @@ const pug_compile = () => {
 	.pipe(gulp.dest(routes.pug.dest));
 }
 
-const assets = gulp.series([pug_compile]);
+const sass_compile = () => {
+	return gulp.src(routes.sass.src)
+	.pipe(sass())
+	.pipe(gulp.dest(routes.sass.dest));
+}
+
+const assets = gulp.series([pug_compile, sass_compile]);
 
 // ----- Watch -----
 
-// https://gulpjs.com/docs/en/api/watch
-const watch = async () => {
-	return gulp.watch([
-		routes.pug.watch
-	], {
-		delay: 0,
-		interval: 0,
-		binaryInterval: 0
-	}, pug_compile);
+const watch_options = {
+	delay: 0,
+	interval: 0,
+	binaryInterval: 0
 }
+
+const watch_pug = async () => {
+	return gulp.watch([routes.pug.watch], watch_options, pug_compile);
+}
+
+const watch_sass = async () => {
+	return gulp.watch([routes.sass.watch], watch_options, sass_compile);
+}
+
+const watch = gulp.parallel([
+	watch_pug,
+	watch_sass
+]);
 
 // ----- Server -----
 
