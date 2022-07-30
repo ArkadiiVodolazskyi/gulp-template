@@ -11,6 +11,8 @@ import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
 import autoPrefixer from 'gulp-autoprefixer';
 import csso from 'gulp-csso';
+import browserify from 'gulp-bro';
+import babelify from 'babelify';
 
 // TODO: use PostCSS instead of gulp-autoprefixer: https://github.com/postcss/autoprefixer#gulp
 
@@ -31,6 +33,11 @@ const routes = {
 		watch: 'src/sass/*.sass',
 		src: 'src/sass/**/*.sass',
 		dest: 'build/css'
+	},
+	js: {
+		watch: 'src/js/*.js',
+		src: 'src/js/main.js',
+		dest: 'build/js'
 	}
 }
 
@@ -66,7 +73,15 @@ const sass_compile = () => {
 	.pipe(gulp.dest(routes.sass.dest));
 }
 
-const assets = gulp.series([pug_compile, sass_compile]);
+const js_compile = () => {
+	return gulp.src(routes.js.src)
+	.pipe(browserify({
+		transform: [babelify.configure({ presets: ['@babel/preset-env'] })]
+	}))
+	.pipe(gulp.dest(routes.js.dest));
+}
+
+const assets = gulp.series([pug_compile, sass_compile, js_compile]);
 
 // ----- Watch -----
 
@@ -79,6 +94,7 @@ const watch_options = {
 const watch = async () => {
 	gulp.watch([routes.pug.watch], watch_options, pug_compile);
 	gulp.watch([routes.sass.watch], watch_options, sass_compile);
+	gulp.watch([routes.js.watch], watch_options, js_compile);
 }
 
 // ----- Server -----
