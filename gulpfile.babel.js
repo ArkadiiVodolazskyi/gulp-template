@@ -13,6 +13,7 @@ import autoPrefixer from 'gulp-autoprefixer';
 import csso from 'gulp-csso';
 import browserify from 'gulp-bro';
 import babelify from 'babelify';
+import ghPages from 'gulp-gh-pages';
 
 // TODO: use PostCSS instead of gulp-autoprefixer: https://github.com/postcss/autoprefixer#gulp
 
@@ -20,6 +21,7 @@ import babelify from 'babelify';
 
 const routes = {
 	build: 'build',
+	deploy: 'build/**/*',
 	pug: {
 		watch: 'src/**/*.pug',
 		src: 'src/*.pug',
@@ -116,8 +118,24 @@ const start = gulp.parallel([
 
 // ----- Run -----
 
-export const dev = gulp.series([
+export const build = gulp.series([
 	prepare,
-	assets,
+	assets
+]);
+
+export const dev = gulp.series([
+	build,
 	start
+]);
+
+// ----- Deploy -----
+
+const raw_deploy = () => {
+	return gulp.src(routes.deploy)
+	.pipe(ghPages());
+}
+
+export const deploy = gulp.series([
+	build,
+	raw_deploy
 ]);
