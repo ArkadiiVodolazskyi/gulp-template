@@ -1,1 +1,1 @@
-# Gulp basics
+# Gulp template
