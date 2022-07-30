@@ -22,8 +22,11 @@
   },
   "devDependencies": {
     "gulp-autoprefixer": "^8.0.0",
+    "gulp-csso": "^4.0.1",
     "gulp-sass": "^5.1.0",
     "sass": "^1.54.0"
   },
-  "browserslist": ["last 10 versions"]
+  "browserslist": [
+    "last 10 versions"
+  ]
 }

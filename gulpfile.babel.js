@@ -9,8 +9,8 @@ import image from 'gulp-image';
 import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
-
-import autoPrefixer from 'gulp-autoprefixer'; // https://github.com/postcss/autoprefixer#options | https://github.com/browserslist/browserslist#queries
+import autoPrefixer from 'gulp-autoprefixer';
+import csso from 'gulp-csso';
 
 // TODO: use PostCSS instead of gulp-autoprefixer: https://github.com/postcss/autoprefixer#gulp
 
@@ -62,6 +62,7 @@ const sass_compile = () => {
 	.pipe(sass())
 	.on('error', sass.logError)
 	.pipe(autoPrefixer())
+	.pipe(csso())
 	.pipe(gulp.dest(routes.sass.dest));
 }
 
